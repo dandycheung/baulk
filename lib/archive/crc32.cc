@@ -17,6 +17,7 @@
 // - crc32_16bytes  needs all of Crc32Lookup
 
 #include <baulk/archive/details/crc32.h>
+#include <utility>
 
 #ifndef CRC32_LITTLE_ENDIAN
 #define CRC32_LITTLE_ENDIAN 1234
@@ -33,8 +34,6 @@
 #if defined(_M_AMD64) || defined(_M_IX86)
 // intrinsics / prefetching
 #include <xmmintrin.h>
-
-#include <utility>
 #ifdef __MINGW32__
 #define PREFETCH(location) __builtin_prefetch(location)
 #else
