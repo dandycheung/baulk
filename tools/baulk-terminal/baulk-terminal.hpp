@@ -1,6 +1,6 @@
 //
-#ifndef BAULKTERMINAL_HPP
-#define BAULKTERMINAL_HPP
+#ifndef BAULK_TERMINAL_HPP
+#define BAULK_TERMINAL_HPP
 #pragma once
 #include <bela/base.hpp>
 #include <bela/simulator.hpp>
@@ -53,7 +53,6 @@ private:
   bool usevs{false};
   bool usevspreview{false};
   bool cleanup{false};
-  bool conhost{false};
 };
 
 } // namespace baulk

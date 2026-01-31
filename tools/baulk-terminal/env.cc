@@ -92,47 +92,41 @@ inline std::optional<std::wstring> FindWindowsTerminal() {
 }
 
 std::optional<std::wstring> SearchBaulkExec(bela::error_code &ec) {
-  auto exepath = bela::ExecutableFinalPathParent(ec);
-  if (!exepath) {
+  auto parent = bela::ExecutableFinalPathParent(ec);
+  if (!parent) {
     return std::nullopt;
   }
-  auto baulkexec = bela::StringCat(*exepath, L"\\baulk-exec.exe");
-  if (bela::PathFileIsExists(baulkexec)) {
-    return std::make_optional(std::move(baulkexec));
+  if (auto cmd = bela::StringCat(*parent, L"\\baulk-exec.exe"); bela::PathFileIsExists(cmd)) {
+    return std::make_optional(std::move(cmd));
   }
-  std::wstring bkroot(*exepath);
+  std::wstring current(*parent);
   for (size_t i = 0; i < 5; i++) {
-    auto baulkexec = bela::StringCat(bkroot, L"\\bin\\baulk-exec.exe");
-    if (bela::PathFileIsExists(baulkexec)) {
-      return std::make_optional(std::move(baulkexec));
+    if (auto cmd = bela::StringCat(current, L"\\bin\\baulk-exec.exe"); bela::PathFileIsExists(cmd)) {
+      return std::make_optional(std::move(cmd));
     }
-    bela::PathStripName(bkroot);
+    bela::PathStripName(current);
   }
   ec = bela::make_error_code(bela::ErrGeneral, L"unable found baulk.exe");
   return std::nullopt;
 }
 
-void ApplyBaulkNewExec(std::wstring_view baulkexec) {
-  auto dir = bela::DirName(baulkexec);
-  auto baulkexecnew = bela::StringCat(dir, L"\\baulk-exec.new");
-  if (bela::PathFileIsExists(baulkexecnew)) {
-    DbgPrint(L"Found baulk-exec.new: %s trace apply it", baulkexecnew);
-    if (MoveFileExW(baulkexecnew.data(), baulkexec.data(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING) != TRUE) {
+void ApplyBaulkNewExec(std::wstring_view baulkExec) {
+  auto current = bela::DirName(baulkExec);
+  if (auto newCmd = bela::StringCat(current, L"\\baulk-exec.new"); bela::PathFileIsExists(newCmd)) {
+    DbgPrint(L"Found baulk-exec.new: %s trace apply it", newCmd);
+    if (MoveFileExW(newCmd.data(), baulkExec.data(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING) != TRUE) {
       auto ec = bela::make_system_error_code();
       DbgPrint(L"Apply new baulk-exec error: %s", ec);
     }
   }
-  auto baulkexecdel = bela::StringCat(dir, L"\\baulk-exec.del");
-  DeleteFileW(baulkexecdel.data());
+  auto trashCmd = bela::StringCat(current, L"\\baulk-exec.del");
+  DeleteFileW(trashCmd.data());
 }
 
 bool Executor::PrepareArgv(bela::EscapeArgv &ea, bela::error_code &ec) {
-  if (!conhost) {
-    DbgPrint(L"Turn off conhost, Try to find Windows Terminal");
-    if (auto wt = FindWindowsTerminal(); wt) {
-      ea.Assign(*wt).Append(L"--title").Append(L"Windows Terminal \U0001F496 Baulk").Append(L"--");
-      DbgPrint(L"Found Windows Terminal: %s", *wt);
-    }
+  if (auto wt = FindWindowsTerminal(); wt) {
+    ea.Assign(*wt).Append(L"--title").Append(L"Windows Terminal \U0001F496 Baulk").Append(L"--");
+    DbgPrint(L"Found Windows Terminal: %s", *wt);
   }
   auto baulkexec = SearchBaulkExec(ec);
   if (!baulkexec) {

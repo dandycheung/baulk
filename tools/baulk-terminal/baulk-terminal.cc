@@ -36,11 +36,9 @@ Usage: baulk-terminal [option] ...
                Load Visual Studio related environment variables
   --vs-preview
                Load Visual Studio (Preview) related environment variables
-  --conhost
-               Use conhost not Windows terminal
 
 )";
-  bela::BelaMessageBox(nullptr, L"Baulk Terminal Launcher", usage, BAULK_APPLINK, bela::mbs_t::ABOUT);
+  bela::BelaMessageBox(nullptr, L"baulk-terminal launcher", usage, BAULK_APPLINK, bela::mbs_t::ABOUT);
 }
 
 bool Executor::ParseArgv(bela::error_code &ec) {
@@ -59,11 +57,9 @@ bool Executor::ParseArgv(bela::error_code &ec) {
       .Add(L"shell", bela::required_argument, L'S')
       .Add(L"cwd", bela::required_argument, L'W')
       .Add(L"arch", bela::required_argument, L'A')
-      .Add(L"venv", bela::required_argument, L'E') // virtual env support
-      .Add(L"vs", bela::no_argument, 1000)         // load visual studio environment
-      .Add(L"vs-preview", bela::no_argument, 1001) // load visual studio (Preview) environment
-      .Add(L"conhost", bela::no_argument, 1002)    // disable windows termainl
-      .Add(L"clang", bela::no_argument, 99999);    // Deprecated --clang.
+      .Add(L"venv", bela::required_argument, L'E')  // virtual env support
+      .Add(L"vs", bela::no_argument, 1000)          // load visual studio environment
+      .Add(L"vs-preview", bela::no_argument, 1001); // load visual studio (Preview) environment
   auto ret = pa.Execute(
       [this](int val, const wchar_t *oa, const wchar_t *) {
         switch (val) {
@@ -71,7 +67,7 @@ bool Executor::ParseArgv(bela::error_code &ec) {
           BaulkMessage();
           ExitProcess(0);
         case 'v':
-          bela::BelaMessageBox(nullptr, L"Baulk Terminal Launcher", BAULK_APPVERSION, BAULK_APPLINK,
+          bela::BelaMessageBox(nullptr, L"baulk-terminal launcher", BAULK_APPVERSION, BAULK_APPLINK,
                                bela::mbs_t::ABOUT);
           ExitProcess(0);
         case 'C':
@@ -87,13 +83,12 @@ bool Executor::ParseArgv(bela::error_code &ec) {
           cwd = oa;
           break;
         case 'A': {
-          auto larch = bela::AsciiStrToLower(oa);
-          if (larch == L"x64" || larch == L"arm64" || larch == L"x86" || larch == L"arm") {
-            arch = larch;
+          if (auto la = bela::AsciiStrToLower(oa); la == L"x64" || la == L"arm64" || la == L"x86" || la == L"arm") {
+            arch = la;
             break;
           }
           auto msg = bela::StringCat(L"Invalid arch: ", oa);
-          bela::BelaMessageBox(nullptr, L"Baulk Terminal Launcher", msg.data(), BAULK_APPLINKE, bela::mbs_t::FATAL);
+          bela::BelaMessageBox(nullptr, L"baulk-terminal launcher", msg.data(), BAULK_APPLINKE, bela::mbs_t::FATAL);
         } break;
         case 'E':
           venvs.push_back(oa);
@@ -107,10 +102,6 @@ bool Executor::ParseArgv(bela::error_code &ec) {
           if (!usevs) {
             usevspreview = true;
           }
-          break;
-        case 1002:
-          conhost = true;
-          break;
           break;
         default:
           break;
@@ -147,12 +138,12 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int) {
   baulk::Executor executor;
   bela::error_code ec;
   if (!executor.ParseArgv(ec)) {
-    bela::BelaMessageBox(nullptr, L"BaulkTerminal: Parse Argv error", ec.data(), BAULK_APPLINKE, bela::mbs_t::FATAL);
+    bela::BelaMessageBox(nullptr, L"baulk-terminal: Parse Argv error", ec.data(), BAULK_APPLINKE, bela::mbs_t::FATAL);
     return 1;
   }
   bela::EscapeArgv ea;
   if (!executor.PrepareArgv(ea, ec)) {
-    bela::BelaMessageBox(nullptr, L"BaulkTerminal: Prepare Argv error", ec.data(), BAULK_APPLINKE, bela::mbs_t::FATAL);
+    bela::BelaMessageBox(nullptr, L"baulk-terminal: Prepare Argv error", ec.data(), BAULK_APPLINKE, bela::mbs_t::FATAL);
     return 1;
   }
   STARTUPINFOW si;

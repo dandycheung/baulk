@@ -10,7 +10,6 @@
 | baulk-terminal | Baulk Windows Terminal Launcher     | Start Windows Terminal and load the baulk isolation environment                                                                            |
 | baulk-update   | Baulk's own upgrade tool            | A tool for updating baulk itself.                                                                                                          |
 | unscrew        | Unscrew Extractor                   | GUI extractor tools                                                                                                                        |
-| baulk-migrate  | Baulk easy migration tool           | **uncommon commands**: Migrate to new VFS mode, Usually no need to run                                                                     |
 | baulk-lnk      | Baulk extended launcher (cli)       | **don't call internal command**: Launcher proxy, Start the command in the corresponding package according to the installation information  |
 | baulk-wlnk     | Baulk extended launcher (win32 gui) | **don't call internal command**: Launcher proxy, Start the command in the corresponding package according to the installation information  |
 
@@ -94,7 +93,7 @@ example:
 
 Baulk also provides the `baulk-terminal.exe` program, which is highly integrated with Windows Terminal and can start Windows Terminal after setting the Baulk environment variable, which solves the problem of avoiding conflicts caused by tool modification of system environment variables and anytime. In addition, Baulk added a custom installation option integrated into the Windows Terminal plug-in during the installation process. You can also use Fragments.bat to manually integrate Baulk into Windows Terminal.
 
-baulk-terminal (`baulk < 4.0 aka baulkterminal`) usage:
+baulk-terminal usage:
 
 ```txt
 baulk-terminal - Baulk Terminal Launcher
@@ -119,8 +118,6 @@ Usage: baulk-terminal [option] ...
                Load Visual Studio related environment variables
   --vs-preview
                Load Visual Studio (Preview) related environment variables
-  --conhost
-               Use conhost not Windows terminal
 
 ```
 
