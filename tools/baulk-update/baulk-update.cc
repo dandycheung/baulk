@@ -45,8 +45,8 @@ void Version() {
 }
 
 bool Executor::ParseArgv(int argc, wchar_t **argv) {
-  bela::ParseArgv pa(argc, argv);
-  pa.Add(L"help", bela::no_argument, 'h')
+  bela::ParseArgv p(argc, argv);
+  p.Add(L"help", bela::no_argument, 'h')
       .Add(L"version", bela::no_argument, 'v')
       .Add(L"verbose", bela::no_argument, 'V')
       .Add(L"force", bela::no_argument, L'F')
@@ -58,7 +58,7 @@ bool Executor::ParseArgv(int argc, wchar_t **argv) {
       .Add(L"github-proxy", bela::required_argument, 1003);
 
   bela::error_code ec;
-  auto result = pa.Execute(
+  auto result = p.Execute(
       [&](int val, const wchar_t *oa, const wchar_t *) {
         using baulk::net::HttpClient;
         switch (val) {

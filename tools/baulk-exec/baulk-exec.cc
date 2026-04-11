@@ -79,8 +79,8 @@ bool InitializeGitEnv(bool isCleanupEnv, bela::env::Simulator &sm, bela::error_c
 
 // ParseArgv todo
 bool Executor::ParseArgv(int argc, wchar_t **cargv) {
-  bela::ParseArgv pa(argc, cargv, true);
-  pa.Add(L"help", bela::no_argument, L'h')
+  bela::ParseArgv p(argc, cargv, true);
+  p.Add(L"help", bela::no_argument, L'h')
       .Add(L"version", bela::no_argument, L'v')
       .Add(L"verbose", bela::no_argument, L'V')
       .Add(L"cleanup", bela::no_argument, L'C') // cleanup environment
@@ -97,7 +97,7 @@ bool Executor::ParseArgv(int argc, wchar_t **cargv) {
   std::wstring arch(baulk::env::HostArch);
   std::vector<std::wstring> packageEnvs;
   bela::error_code ec;
-  auto ret = pa.Execute(
+  auto ret = p.Execute(
       [&](int val, const wchar_t *oa, const wchar_t *) {
         switch (val) {
         case 'h':
@@ -152,8 +152,8 @@ bool Executor::ParseArgv(int argc, wchar_t **cargv) {
     bela::FPrintF(stderr, L"baulk-exec: parse argv \x1b[31m%s\x1b[0m\n", ec);
     return false;
   }
-  const auto &Argv = pa.UnresolvedArgs();
-  if (pa.UnresolvedArgs().empty()) {
+  const auto &Argv = p.UnresolvedArgs();
+  if (p.UnresolvedArgs().empty()) {
     bela::FPrintF(stderr, L"baulk-exec: no command input\n");
     Usage();
     exit(1);

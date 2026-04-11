@@ -76,8 +76,8 @@ void verify_file(const std::filesystem::path &file) {
 
 bool Executor::ParseArgv(int argc, wchar_t **argv) {
   using baulk::net::HttpClient;
-  bela::ParseArgv pa(argc, argv);
-  pa.Add(L"help", bela::no_argument, L'h')
+  bela::ParseArgv p(argc, argv);
+  p.Add(L"help", bela::no_argument, L'h')
       .Add(L"version", bela::no_argument, L'v')
       .Add(L"verbose", bela::no_argument, L'V')
       .Add(L"cwd", bela::required_argument, L'W')
@@ -88,7 +88,7 @@ bool Executor::ParseArgv(int argc, wchar_t **argv) {
       .Add(L"https-proxy", bela::required_argument, 1001)
       .Add(L"no-cache", bela::no_argument, 1002); // option
   bela::error_code ec;
-  auto ret = pa.Execute(
+  auto ret = p.Execute(
       [&](int val, const wchar_t *oa, const wchar_t *) {
         switch (val) {
         case 'h':
@@ -132,7 +132,7 @@ bool Executor::ParseArgv(int argc, wchar_t **argv) {
     bela::FPrintF(stderr, L"ParseArgv: %s\n", ec.message);
     return false;
   }
-  for (const auto p : pa.UnresolvedArgs()) {
+  for (const auto p : p.UnresolvedArgs()) {
     urls.emplace_back(p);
   }
   if (cwd.empty()) {

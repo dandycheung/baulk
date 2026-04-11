@@ -32,9 +32,9 @@ struct command_map_t {
 };
 
 std::optional<command_t> ParseArgv(int argc, wchar_t **argv) {
-  cli::ParseArgv pa(argc - 1, argv + 1);
+  cli::ParseArgv p(argc - 1, argv + 1);
   std::wstring_view profile;
-  pa.Add(L"help", cli::no_argument, 'h')
+  p.Add(L"help", cli::no_argument, 'h')
       .Add(L"version", cli::no_argument, 'v')
       .Add(L"verbose", cli::no_argument, 'V')
       .Add(L"quiet", cli::no_argument, 'Q')
@@ -49,7 +49,7 @@ std::optional<command_t> ParseArgv(int argc, wchar_t **argv) {
       .Add(L"bucket");
 
   bela::error_code ec;
-  auto result = pa.Execute(
+  auto result = p.Execute(
       [&](int val, const wchar_t *oa, const wchar_t *) {
         using baulk::net::HttpClient;
         switch (val) {
@@ -106,12 +106,12 @@ std::optional<command_t> ParseArgv(int argc, wchar_t **argv) {
     bela::FPrintF(stderr, L"\x1b[33mbaulk warning: --verbose --quiet is set at the same time, "
                           L"quiet mode is turned off\x1b[0m\n");
   }
-  if (pa.Argv().empty()) {
+  if (p.Argv().empty()) {
     bela::FPrintF(stderr, L"baulk no command input\n");
     return std::nullopt;
   }
 
-  constexpr command_map_t cmdmaps[] = {
+  constexpr command_map_t commands[] = {
       {.name = L"help", .cmd_entry = baulk::commands::cmd_help, .require_context = false},
       {.name = L"h", .cmd_entry = baulk::commands::cmd_help, .require_context = false}, // help alias
       {.name = L"version", .cmd_entry = baulk::commands::cmd_version, .require_context = true},
@@ -124,7 +124,7 @@ std::optional<command_t> ParseArgv(int argc, wchar_t **argv) {
       {.name = L"s", .cmd_entry = baulk::commands::cmd_search, .require_context = true},         // search alias
       {.name = L"remove", .cmd_entry = baulk::commands::cmd_remove, .require_context = true},    // remove
       {.name = L"r", .cmd_entry = baulk::commands::cmd_remove, .require_context = true},         // remove alias
-      {.name = L"uninstall", .cmd_entry = baulk::commands::cmd_remove, .require_context = true}, // remove alias 'uninstall'
+      {.name = L"uninstall", .cmd_entry = baulk::commands::cmd_remove, .require_context = true}, // remove alias
       {.name = L"update", .cmd_entry = baulk::commands::cmd_update, .require_context = true},    // update bucket
       {.name = L"upgrade", .cmd_entry = baulk::commands::cmd_upgrade, .require_context = true},  // upgrade
       {.name = L"u", .cmd_entry = baulk::commands::cmd_uu, .require_context = true},             // update and upgrade
@@ -140,9 +140,9 @@ std::optional<command_t> ParseArgv(int argc, wchar_t **argv) {
       {.name = L"e", .cmd_entry = baulk::commands::cmd_extract, .require_context = false},            // extract command
       {.name = L"brand", .cmd_entry = baulk::commands::cmd_brand, .require_context = false},          // brand
   };
-  auto subcmd = pa.Argv().front();
-  for (const auto &c : cmdmaps) {
-    if (subcmd == c.name) {
+  auto current = p.Argv().front();
+  for (const auto &c : commands) {
+    if (current == c.name) {
       if (c.require_context) {
         if (!baulk::InitializeContext(profile, ec)) {
           bela::FPrintF(stderr, L"baulk initialize context error: \x1b[31m%s\x1b[0m\n", ec);
@@ -151,12 +151,12 @@ std::optional<command_t> ParseArgv(int argc, wchar_t **argv) {
         net::HttpClient::DefaultClient().InitializeProxyFromEnv();
       }
       return std::make_optional<command_t>(command_t{
-          .argv = commands::argv_t(pa.Argv().begin() + 1, pa.Argv().end()),
+          .argv = commands::argv_t(p.Argv().begin() + 1, p.Argv().end()),
           .cmd_entry = c.cmd_entry,
       });
     }
   }
-  bela::FPrintF(stderr, L"baulk unsupport command: \x1b[31m%s\x1b[0m\n", subcmd);
+  bela::FPrintF(stderr, L"baulk unsupport command: \x1b[31m%s\x1b[0m\n", current);
   return std::nullopt;
 }
 

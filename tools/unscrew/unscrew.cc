@@ -176,13 +176,13 @@ bool Executor::ParseArgv(bela::error_code &ec) {
   }
   auto closer = bela::finally([&] { LocalFree(Argv); });
   std::error_code e;
-  bela::ParseArgv pa(Argc, Argv);
-  pa.Add(L"help", bela::no_argument, L'h')
+  bela::ParseArgv p(Argc, Argv);
+  p.Add(L"help", bela::no_argument, L'h')
       .Add(L"version", bela::no_argument, L'v')
       .Add(L"verbose", bela::no_argument, L'V')
       .Add(L"destination", bela::required_argument, L'd')
       .Add(L"flat", bela::no_argument, L'z');
-  auto ret = pa.Execute(
+  auto ret = p.Execute(
       [&](int val, const wchar_t *oa, const wchar_t *) {
         switch (val) {
         case 'h':
@@ -209,7 +209,7 @@ bool Executor::ParseArgv(bela::error_code &ec) {
   if (!ret) {
     return false;
   }
-  for (const auto s : pa.UnresolvedArgs()) {
+  for (const auto s : p.UnresolvedArgs()) {
     archive_files.emplace_back(std::filesystem::absolute(s, e));
   }
   return true;
