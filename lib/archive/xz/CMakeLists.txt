@@ -171,10 +171,86 @@ if(HAVE_CLOCK_GETTIME OR HAVE_CLOCK_GETTIME_LIBRT)
 endif()
 
 
-# Options for new enough GCC or Clang on any arch or operating system:
-if(CMAKE_C_COMPILER_ID MATCHES GNU|Clang)
-    # configure.ac has a long list but it won't be copied here:
-    add_compile_options(-Wall -Wextra)
+# Add warning options for GCC or Clang. Keep this in sync with configure.ac.
+# Check for MSVC so that these won't be added with clang-cl with which -Wall
+# means -Weverything.
+#
+# NOTE: add_compile_options() doesn't affect the feature checks;
+# only the new targets being created use these flags. Thus
+# the -Werror usage in checks won't be break because of these.
+if(NOT MSVC AND CMAKE_C_COMPILER_ID MATCHES GNU|Clang)
+    foreach(OPT -Wall
+                -Wextra
+                -Wvla
+                -Wformat=2
+                -Winit-self
+                -Wmissing-include-dirs
+                -Wshift-overflow=2
+                -Wstrict-overflow=3
+                -Walloc-zero
+                -Wduplicated-cond
+                -Wfloat-equal
+                -Wundef
+                -Wshadow
+                -Wpointer-arith
+                -Wbad-function-cast
+                -Wwrite-strings
+                -Wdate-time
+                -Wsign-conversion
+                -Wfloat-conversion
+                -Wlogical-op
+                -Waggregate-return
+                -Wstrict-prototypes
+                -Wold-style-definition
+                -Wmissing-prototypes
+                -Wmissing-declarations
+                -Wredundant-decls
+                -Wimplicit-fallthrough
+                -Wimplicit-fallthrough=5
+
+                -Wc99-compat
+                -Wc11-extensions
+                -Wc2x-compat
+                -Wc2x-extensions
+                -Warray-bounds-pointer-arithmetic
+                -Wassign-enum
+                -Wconditional-uninitialized
+                -Wdocumentation
+                -Wduplicate-enum
+                -Wempty-translation-unit
+                -Wextra-semi-stmt
+                -Wflexible-array-extensions
+                -Wmissing-variable-declarations
+                -Wnewline-eof
+                -Wshift-sign-overflow
+                -Wstring-conversion
+                )
+        # A variable name cannot have = in it so replace = with _.
+        string(REPLACE = _ CACHE_VAR "HAVE_COMPILER_OPTION_${OPT}")
+
+        check_c_compiler_flag("${OPT}" "${CACHE_VAR}")
+
+        if("${${CACHE_VAR}}")
+            add_compile_options("${OPT}")
+        endif()
+    endforeach()
+endif()
+
+# Enable more warnings with MSVC and clang-cl but disable a few too:
+#   - C4100: unused function arguments
+#   - C4127: conditional expression is a constant
+#   - C4200: C99/C11 flexible array member
+#   - C4244: Integer conversion
+#   - C4267: Integer conversion
+#   - C4996: getenv() and a few other functions
+#
+# With clang-cl, some warnings have to be disabled with clang-style options.
+if(MSVC)
+    add_compile_options(/W4 /wd4100 /wd4127 /wd4200 /wd4244 /wd4267 /wd4996)
+    if(CMAKE_C_COMPILER_ID MATCHES Clang)
+        add_compile_options(-Wno-unused-parameter
+                            -Wno-deprecated-declarations)
+    endif()
 endif()
 
 #############################################################################
