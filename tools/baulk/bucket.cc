@@ -171,29 +171,29 @@ std::optional<baulk::Package> PackageLocalMeta(std::wstring_view pkgName, bela::
   return std::make_optional(std::move(pkg));
 }
 
-bool PackageUpdatableMeta(const baulk::Package &pkgLocal, baulk::Package &pkg) {
+bool PackageUpdatableMeta(const baulk::Package &installed, baulk::Package &newest) {
   // initialize version from installed version
-  bela::version pkgVersion(pkgLocal.version);
-  auto weights = pkgLocal.weights;
+  bela::version current(installed.version);
+  auto weights = installed.weights;
   bool updated{false};
   for (const auto &bucket : baulk::LoadedBuckets()) {
     bela::error_code ec;
-    auto pkgN = PackageMeta(bucket, pkgLocal.name, ec);
-    if (!pkgN) {
+    auto newOne = PackageMeta(bucket, installed.name, ec);
+    if (!newOne) {
       if (ec && ec.code != ENOENT) {
         bela::FPrintF(stderr, L"baulk: parse package meta error: %s\n", ec);
       }
       continue;
     }
-    pkgN->bucket = bucket.name;
-    pkgN->weights = bucket.weights;
-    bela::version newVersion(pkgN->version);
+    newOne->bucket = bucket.name;
+    newOne->weights = bucket.weights;
+    bela::version newVersion(newOne->version);
     // compare version newVersion is > oldversion
     // newVersion == oldversion and strversion not equail compare weights
-    if (newVersion > pkgVersion || (newVersion == pkgVersion && weights < pkgN->weights)) {
-      pkg = std::move(*pkgN);
-      pkgVersion = newVersion;
-      weights = pkgN->weights;
+    if (newVersion > current || (newVersion == current && weights < newOne->weights)) {
+      newest = std::move(*newOne);
+      current = newVersion;
+      weights = newOne->weights;
       updated = true;
     }
   }
@@ -202,7 +202,7 @@ bool PackageUpdatableMeta(const baulk::Package &pkgLocal, baulk::Package &pkg) {
 // package metadata
 std::optional<baulk::Package> PackageMetaEx(std::wstring_view pkgName, bela::error_code &ec) {
   ec.clear();
-  bela::version pkgVersion; // 0.0.0.0
+  bela::version current; // 0.0.0.0
   baulk::Package pkg;
   size_t pkgSame = 0;
   for (const auto &bucket : baulk::LoadedBuckets()) {
@@ -219,9 +219,9 @@ std::optional<baulk::Package> PackageMetaEx(std::wstring_view pkgName, bela::err
     bela::version newVersion(pkgN->version);
     // compare version newVersion is > oldversion
     // newVersion == oldversion and strversion not equail compare weights
-    if (newVersion > pkgVersion || (newVersion == pkgVersion && pkg.weights < pkgN->weights)) {
+    if (newVersion > current || (newVersion == current && pkg.weights < pkgN->weights)) {
       pkg = std::move(*pkgN);
-      pkgVersion = newVersion;
+      current = newVersion;
     }
   }
   if (pkgSame == 0) {

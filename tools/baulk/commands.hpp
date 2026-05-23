@@ -45,7 +45,7 @@ void usage_search();
 void usage_remove();
 void usage_update();
 void usage_upgrade();
-void usage_update_and_upgrade();
+void usage_ux();
 void usage_freeze();
 void usage_unfreeze();
 void usage_sha256sum();

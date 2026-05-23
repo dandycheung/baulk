@@ -87,7 +87,7 @@ int cmd_help(const baulk::commands::argv_t &argv) {
       {.name = L"uninstall", .usage = baulk::commands::usage_remove},      // remove
       {.name = L"update", .usage = baulk::commands::usage_update},         // update bucket
       {.name = L"upgrade", .usage = baulk::commands::usage_upgrade},       // upgrade
-      {.name = L"u", .usage = baulk::commands::usage_update_and_upgrade},  // update and upgrade
+      {.name = L"u", .usage = baulk::commands::usage_ux},  // update and upgrade
       {.name = L"freeze", .usage = baulk::commands::usage_freeze},         // freeze
       {.name = L"unfreeze", .usage = baulk::commands::usage_unfreeze},     // unfreeze
       {.name = L"b3sum", .usage = baulk::commands::usage_b3sum},           // b3sum

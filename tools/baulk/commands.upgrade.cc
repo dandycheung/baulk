@@ -22,7 +22,7 @@ Example:
 )");
 }
 
-void usage_update_and_upgrade() {
+void usage_ux() {
   bela::FPrintF(stderr, LR"(Usage: baulk u [<args>]
 Update bucket metadata and upgrade all upgradeable packages.
 
