@@ -31,9 +31,9 @@ bool UseShell(std::wstring_view shell, bela::EscapeArgv &ea) {
     }
   }
   if (NameEquals(shell, L"pwsh-preview")) {
-    if (auto pwshpreview = baulk::pwsh::PwshCorePreview(); !pwshpreview.empty()) {
-      ea.Append(pwshpreview);
-      DbgPrint(L"Use pwsh-preview: %s", pwshpreview);
+    if (auto pwshPreview = baulk::pwsh::PwshCorePreview(); !pwshPreview.empty()) {
+      ea.Append(pwshPreview);
+      DbgPrint(L"Use pwsh-preview: %s", pwshPreview);
       return true;
     }
   }
@@ -142,14 +142,14 @@ bool Executor::PrepareArgv(bela::EscapeArgv &ea, bela::error_code &ec) {
     ea.Append(L"--cleanup");
     DbgPrint(L"Turn on cleanup env");
   }
-  if (usevspreview) {
+  if (enablePreviewVS) {
     ea.Append(L"--vs-preview");
     DbgPrint(L"Turn on vs preview env");
     if (!arch.empty()) {
       ea.Append(L"-A").Append(arch);
       DbgPrint(L"Select arch: %s", arch);
     }
-  } else if (usevs) {
+  } else if (enableVS) {
     ea.Append(L"--vs");
     DbgPrint(L"Turn on vs env");
     if (!arch.empty()) {
@@ -161,7 +161,7 @@ bool Executor::PrepareArgv(bela::EscapeArgv &ea, bela::error_code &ec) {
     ea.Append(L"-W").Append(cwd);
     DbgPrint(L"CWD: %s", cwd);
   }
-  for (const auto &e : venvs) {
+  for (const auto &e : envList) {
     ea.Append(L"-E").Append(e);
     DbgPrint(L"Enable virtual env: %s", e);
   }

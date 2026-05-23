@@ -91,16 +91,16 @@ bool Executor::ParseArgv(bela::error_code &ec) {
           bela::BelaMessageBox(nullptr, L"baulk-terminal launcher", msg.data(), BAULK_APPLINKE, bela::mbs_t::FATAL);
         } break;
         case 'E':
-          venvs.push_back(oa);
+          envList.push_back(oa);
           break;
         case 1000:
-          if (!usevspreview) {
-            usevs = true;
+          if (!enablePreviewVS) {
+            enableVS = true;
           }
           break;
         case 1001:
-          if (!usevs) {
-            usevspreview = true;
+          if (!enableVS) {
+            enablePreviewVS = true;
           }
           break;
         default:

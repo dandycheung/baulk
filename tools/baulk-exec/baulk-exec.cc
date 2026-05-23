@@ -25,6 +25,7 @@ Usage: baulk-exec [option] <command> [<args>] ...
   --vs                 Load Visual Studio related environment variables
   --vs-preview         Load Visual Studio (Preview) related environment variables
   --vs-instance        Load environment variables for a specific installation of Visual Studio (accept: instanceId)
+  --vc-preview         Use Visual C++ Preview toolset
   --time               Summarize command system resource usage
 
 Example:
@@ -90,10 +91,12 @@ bool Executor::ParseArgv(int argc, wchar_t **cargv) {
       .Add(L"vs", bela::no_argument, 1000) // load visual studio environment
       .Add(L"vs-preview", bela::no_argument, 1001)
       .Add(L"vs-instance", bela::required_argument, 1002)
+      .Add(L"vc-preview", bela::no_argument, 1003)
       .Add(L"time", bela::no_argument, 1004)
       .Add(L"clang", bela::no_argument, 9999); // Deprecated
   bool initializeVSEnv = false;
   bool initializeVSPreviewEnv = false;
+  bool initilaizeVCPreviewEnv = false;
   std::wstring arch(baulk::env::HostArch);
   std::vector<std::wstring> packageEnvs;
   bela::error_code ec;
@@ -138,6 +141,9 @@ bool Executor::ParseArgv(int argc, wchar_t **cargv) {
           break;
         case 1002:
           vsInstance = oa;
+          break;
+        case 1003:
+          initilaizeVCPreviewEnv = true;
           break;
         case 1004:
           summarizeTime = true;
@@ -190,7 +196,9 @@ bool Executor::ParseArgv(int argc, wchar_t **cargv) {
 
   [&]() {
     if (!vsInstance.empty()) {
-      if (auto vs = baulk::env::InitializeVisualStudioSpecificInstanceEnv(simulator, vsInstance, arch, ec); vs) {
+      if (auto vs = baulk::env::InitializeVisualStudioSpecificInstanceEnv(simulator, vsInstance, arch,
+                                                                          initilaizeVCPreviewEnv, ec);
+          vs) {
         DbgPrint(L"Initialize %v done", *vs);
         return;
       }
@@ -198,7 +206,7 @@ bool Executor::ParseArgv(int argc, wchar_t **cargv) {
       return;
     }
     if (initializeVSEnv) {
-      if (auto vs = baulk::env::InitializeVisualStudioEnv(simulator, arch, false, ec); vs) {
+      if (auto vs = baulk::env::InitializeVisualStudioEnv(simulator, arch, false, initilaizeVCPreviewEnv, ec); vs) {
         DbgPrint(L"Initialize %v done", *vs);
         return;
       }
@@ -206,7 +214,7 @@ bool Executor::ParseArgv(int argc, wchar_t **cargv) {
       return;
     }
     if (initializeVSPreviewEnv) {
-      if (auto vs = baulk::env::InitializeVisualStudioEnv(simulator, arch, true, ec); vs) {
+      if (auto vs = baulk::env::InitializeVisualStudioEnv(simulator, arch, true, initilaizeVCPreviewEnv, ec); vs) {
         DbgPrint(L"Initialize %v done", *vs);
         return;
       }
@@ -223,7 +231,7 @@ bool Executor::ParseArgv(int argc, wchar_t **cargv) {
   simulator.PathPushFront(std::move(paths));
   baulk::env::Constructor ctor(baulk::IsDebugMode);
   if (!ctor.InitializeEnvs(packageEnvs, simulator, ec)) {
-    bela::FPrintF(stderr, L"baulk-exec constructor venvs error %s\n", ec);
+    bela::FPrintF(stderr, L"baulk-exec constructor envList error %s\n", ec);
     return false;
   }
   return true;

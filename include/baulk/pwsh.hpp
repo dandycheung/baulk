@@ -80,6 +80,10 @@ inline bool AccumulatePwsh(std::wstring_view dir, std::vector<PwshMeta> &pwshs) 
 }
 
 inline std::wstring PwshCore() {
+  auto pwsh = bela::WindowsExpandEnv(L"%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.exe");
+  if (bela::PathExists(pwsh)) { // Please don't use std::filesystem::exists
+    return pwsh;
+  }
   std::vector<PwshMeta> pwshs;
   if (AccumulatePwsh(L"%ProgramFiles%\\PowerShell", pwshs)) {
     return PwshNewest(pwshs);
@@ -88,6 +92,10 @@ inline std::wstring PwshCore() {
 }
 
 inline std::wstring PwshCorePreview() {
+  auto pwshPreview = bela::WindowsExpandEnv(L"%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.exe");
+  if (bela::PathExists(pwshPreview)) { // Please don't use std::filesystem::exists
+    return pwshPreview;
+  }
   std::vector<PwshMeta> pwshs;
   if (AccumulatePwsh(L"%ProgramFiles%\\PowerShell", pwshs)) {
     return PwshPreview(pwshs);

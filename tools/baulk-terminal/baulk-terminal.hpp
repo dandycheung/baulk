@@ -49,9 +49,9 @@ private:
   std::wstring shell;
   std::wstring cwd;
   std::wstring arch;
-  std::vector<std::wstring> venvs;
-  bool usevs{false};
-  bool usevspreview{false};
+  std::vector<std::wstring> envList;
+  bool enableVS{false};
+  bool enablePreviewVS{false};
   bool cleanup{false};
 };
 

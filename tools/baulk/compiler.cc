@@ -14,7 +14,7 @@ bool Executor::Initialize(bela::error_code &init_ec) {
     return false;
   }
   simulator.InitializeCleanupEnv();
-  if (auto vs = baulk::env::InitializeVisualStudioEnv(simulator, baulk::env::HostArch, false, init_ec); vs) {
+  if (auto vs = baulk::env::InitializeVisualStudioEnv(simulator, baulk::env::HostArch, false, false, init_ec); vs) {
     DbgPrint(L"initialize vs env success: %v", *vs);
     initialized = true;
     return true;

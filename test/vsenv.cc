@@ -30,7 +30,7 @@ int wmain() {
   baulk::vfs::InitializeFastPathFs(ec);
   bela::env::Simulator sim;
   sim.InitializeCleanupEnv();
-  auto vs = baulk::env::InitializeVisualStudioEnv(sim, L"x64", true, ec);
+  auto vs = baulk::env::InitializeVisualStudioEnv(sim, L"x64", true, false, ec);
   if (!vs) {
     bela::FPrintF(stderr, L"error %s\n", ec);
     return 1;
@@ -39,7 +39,7 @@ int wmain() {
   baulk::env::Constructor cs(true);
   std::vector<std::wstring> envs = {L"rust"};
   if (!cs.InitializeEnvs(envs, sim, ec)) {
-    bela::FPrintF(stderr, L"unable initialize venvs: %s\n", ec);
+    bela::FPrintF(stderr, L"unable initialize envList: %s\n", ec);
   } else {
     bela::FPrintF(stderr, L"rust initialize success\n");
   }
