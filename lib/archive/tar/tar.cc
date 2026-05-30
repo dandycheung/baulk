@@ -400,7 +400,7 @@ std::optional<Header> Reader::Next(bela::error_code &ec) {
         // members in the class
         // not all data members must have a designator, but those that do must follow the rule above
         // it is not possible to mix designated and non-designated initialization
-        // desginators of the same data member cannot appear multiple times
+        // designators of the same data member cannot appear multiple times
         // designators cannot be nested
         return std::make_optional(Header{.Name = h.Name,
                                          .Xattrs = h.Xattrs,

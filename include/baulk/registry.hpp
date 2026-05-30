@@ -73,7 +73,7 @@ inline std::optional<WindowsSDK> LookupWindowsSDK(bela::error_code &ec) {
     return std::nullopt;
   }
   if (type != REG_SZ) {
-    ec = bela::make_error_code(bela::ErrGeneral, L"ProductVersion not REG_SIZE: ", type);
+    ec = bela::make_error_code(bela::ErrGeneral, L"ProductVersion not REG_SZ: ", type);
     return std::nullopt;
   }
   winsdk.ProductVersion.assign(buffer);

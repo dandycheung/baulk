@@ -9,7 +9,7 @@ constexpr size_t xzoutsize = 256 * 1024;
 constexpr size_t xzinsize = 256 * 1024;
 
 // LZMA allocator
-static lzma_allocator allocator{                                  // allocater
+static lzma_allocator allocator{                                  // allocator
                                 .alloc = baulk::mem::allocate_xz, //
                                 .free = baulk::mem::deallocate_simple,
                                 .opaque = nullptr};

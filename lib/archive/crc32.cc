@@ -119,7 +119,7 @@ uint32_t crc32_bitwise(const void *data, size_t length, uint32_t previousCrc32) 
   return ~crc; // same as crc ^ 0xFFFFFFFF
 }
 
-/// compute CRC32 (half-byte algoritm)
+/// compute CRC32 (half-byte algorithm)
 uint32_t crc32_halfbyte(const void *data, size_t length, uint32_t previousCrc32) {
   uint32_t crc = ~previousCrc32; // same as previousCrc32 ^ 0xFFFFFFFF
   const auto *current = (const uint8_t *)data;
@@ -467,7 +467,7 @@ uint32_t crc32_combine(uint32_t crcA, uint32_t crcB, size_t lengthB) {
   // notes:
   // - I squeezed everything into one function to keep global namespace clean (original code two helper functions)
   // - most original comments are still in place, I added comments where these helper functions where made inline code
-  // - performance-wise there isn't any differenze to the original zlib/pigz code
+  // - performance-wise there isn't any difference to the original zlib/pigz code
 
   // degenerated case
   if (lengthB == 0) {

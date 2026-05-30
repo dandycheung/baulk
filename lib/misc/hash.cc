@@ -94,7 +94,7 @@ std::optional<std::wstring> FileHash(const std::filesystem::path &file, hash_t m
   default:
     break;
   }
-  ec = bela::make_error_code(bela::ErrGeneral, L"unkown hash method: ", static_cast<int>(method));
+  ec = bela::make_error_code(bela::ErrGeneral, L"unknown hash method: ", static_cast<int>(method));
   return std::nullopt;
 }
 

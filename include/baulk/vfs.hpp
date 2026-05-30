@@ -16,7 +16,7 @@ public:
   std::wstring basePath;    // baulk root
   std::wstring appData;     // baulk appdata
   std::wstring etc;         // baulk etc
-  std::wstring vfs;         // baulk pakcage vfs
+  std::wstring vfs;         // baulk package vfs
   std::wstring packages;    // baulk package root
   std::wstring temp;        // baulk temp
   std::wstring locks;       // baulk locks

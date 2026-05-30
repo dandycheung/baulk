@@ -366,7 +366,7 @@ struct DECLSPEC_UUID("89143C9A-05AF-49B0-B717-72E218A2185C") DECLSPEC_NOVTABLE I
     /// <summary>
     /// Gets product-specific properties.
     /// </summary>
-    /// <param name="ppPropeties">A pointer to an instance of <see cref="ISetupPropertyStore"/>. This may be NULL if no properties are defined.</param>
+    /// <param name="ppProperties">A pointer to an instance of <see cref="ISetupPropertyStore"/>. This may be NULL if no properties are defined.</param>
     /// <returns>Standard HRESULT indicating success or failure, including E_FILENOTFOUND if the instance state does not exist.</returns>
     STDMETHOD(GetProperties)(
         _Outptr_result_maybenull_ ISetupPropertyStore** ppProperties
@@ -716,7 +716,7 @@ EXTERN_C const IID IID_ISetupErrorInfo;
 
 #if defined(__cplusplus) && !defined(CINTERFACE)
 /// <summary>
-/// Information about errors that occured during install of an instance.
+/// Information about errors that occurred during install of an instance.
 /// </summary>
 /// <remarks>
 /// Objects may also implement <see cref="IErrorInfo"/> and <see cref="ISetupPropertyStore"/>.
@@ -817,9 +817,9 @@ EXTERN_C const IID IID_ISetupErrorState3;
 struct DECLSPEC_UUID("290019AD-28E2-46D5-9DE5-DA4B6BCF8057") DECLSPEC_NOVTABLE ISetupErrorState3 : public ISetupErrorState2
 {
     /// <summary>
-    /// Gets the runtime error that occured during install of an instance.
+    /// Gets the runtime error that occurred during install of an instance.
     /// </summary>
-    /// <param name="pbstrChip">The runtime error that occured during install of an instance.</param>
+    /// <param name="pbstrChip">The runtime error that occurred during install of an instance.</param>
     /// <returns>Standard HRESULT indicating success or failure.</returns>
     STDMETHOD(GetRuntimeError)(
         _Outptr_result_maybenull_ ISetupErrorInfo** ppErrorInfo

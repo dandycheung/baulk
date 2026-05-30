@@ -86,7 +86,7 @@ constexpr int c_ISSOCK = 0140000; // Socket
 // https://www.mkssoftware.com/docs/man4/tar.4.asp
 /*  ustar
  *    File Header (512 bytes)
- *  Offst Size Field
+ *  Offset Size Field
  *      Pre-POSIX Header
  *  0     100  File name
  *  100   8    File mode
