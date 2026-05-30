@@ -22,7 +22,7 @@ bool FsRedirectionTable::InitializeFromNewest(bela::error_code &ec) {
   return true;
 }
 
-// Protable (baulk >=4.0)
+// Portable (baulk >=4.0)
 bool FsRedirectionTable::InitializeFromPortable(bela::error_code &ec) {
   basePath = appLocation;
   return InitializeFromNewest(ec);

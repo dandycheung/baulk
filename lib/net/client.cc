@@ -292,7 +292,7 @@ std::optional<std::filesystem::path> HttpClient::WinGet(std::wstring_view url, c
     total_size += filePart->CurrentBytes();
     DbgPrint(L"%s download from bytes: %d", u->filename, filePart->CurrentBytes());
   }
-  // Pare progress bar
+  // Prepare progress bar
   baulk::ProgressBar bar;
   if (total_size > 0) {
     bar.Maximum(static_cast<uint64_t>(total_size));

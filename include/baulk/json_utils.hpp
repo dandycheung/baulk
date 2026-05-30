@@ -22,7 +22,7 @@ FromSlash(std::basic_string<T, std::char_traits<T>, Allocator> &&s) {
 class json_view {
 public:
   json_view(const nlohmann::json &o) : obj(o) {}
-  // fecth string value
+  // fetch string value
   std::wstring get(const std::string_view key, std::wstring_view dv = L"") {
     if (auto it = obj.find(key); it != obj.end() && it->is_string()) {
       return bela::encode_into<char, wchar_t>(it->get<std::string_view>());
